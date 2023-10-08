@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LightSwitchView : MonoBehaviour, IInteractable
@@ -8,9 +9,19 @@ public class LightSwitchView : MonoBehaviour, IInteractable
 
     private void Start() => currentState = SwitchState.Off;
 
+    private delegate void ToggleLightDelegate();
+    private ToggleLightDelegate toggleLight;
+
+    private void OnEnable()
+    {
+        toggleLight = ToggleLightSwitch;
+        toggleLight += ToggleSoundEffect;
+    }
+
     public void Interact()
     {
         //Todo - Implement Interaction
+        toggleLight.Invoke();
     }
     private void toggleLights()
     {
@@ -33,5 +44,16 @@ public class LightSwitchView : MonoBehaviour, IInteractable
         {
             lightSource.enabled = lights;
         }
+    }
+
+    private void ToggleLightSwitch()
+    {
+        toggleLights();
+        GameService.Instance.GetInstructionView().HideInstruction();
+    }
+
+    private void ToggleSoundEffect()
+    {
+        GameService.Instance.GetSoundView().PlaySoundEffects(SoundType.SwitchSound);
     }
 }
