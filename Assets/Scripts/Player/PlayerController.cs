@@ -27,6 +27,7 @@ public class PlayerController
         playerState = PlayerState.InDark;
 
         EventService.Instance.OnLightSwitchToggled.AddListener(onLightSwitch);
+        EventService.Instance.OnLightsOffByGhostEvent.AddListener(onLightSwitchOff);
         EventService.Instance.OnKeyPickedUp.AddListener(onKeysPickedUp);
     }
 
@@ -34,6 +35,7 @@ public class PlayerController
     {
         EventService.Instance.OnLightSwitchToggled.RemoveListener(onLightSwitch);
         EventService.Instance.OnKeyPickedUp.RemoveListener(onKeysPickedUp);
+        EventService.Instance.OnLightsOffByGhostEvent.RemoveListener(onLightSwitchOff);
     }
     public void Interact() => IsInteracted = Input.GetKeyDown(KeyCode.E) ? true : (Input.GetKeyUp(KeyCode.E) ? false : IsInteracted);
 
@@ -79,6 +81,8 @@ public class PlayerController
         rotation = playerRigidbody.rotation * Quaternion.Euler(lookRotation);
         position = (transform.position) + (velocity * movement) * Time.fixedDeltaTime;
     }
+
+    private void onLightSwitchOff() => PlayerState = PlayerState.InDark;
 
     private void onLightSwitch()
     {
